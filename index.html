@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>EcoClicker - Recicle e Evolua!</title>
+    <link rel="icon" class="imagem-arredondada" href="EcoClicker-32px.jpg" type="image/jpg">
+    <link rel="manifest" href="/manifest.json" />
+    <style>
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #e8f5e9;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            color: #2e7d32;
+            touch-action: manipulation;
+            -webkit-user-scalable: no;
+        }
+        h1 {
+            color: #1b5e20;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        #recycle-btn {
+            background-color: #4caf50;
+            border: none;
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+            font-size: 5em;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 20px auto;
+            touch-action: manipulation;
+        }
+
+        #recycle-btn:hover {
+            transform: scale(1.05);
+        }
+
+        #points {
+            font-size: 2em;
+            margin: 10px 0;
+            text-transform: capitalize;
+        }
+
+
+        .upgrades {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .upgrade {
+            background-color: #81c784;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 180px;
+            touch-action: manipulation;
+        }
+
+        .upgrade:hover {
+            background-color: #66bb6a;
+        }
+
+        .upgrade:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .achievements {
+            margin-top: 30px;
+            text-align: left;
+            background-color: #c8e6c9;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .achievement {
+            margin: 5px 0;
+            opacity: 0.5;
+        }
+
+        .achievement.unlocked {
+            opacity: 1;
+            font-weight: bold;
+            color: #1b5e20;
+        }
+
+        .goals {
+            margin-top: 20px;
+            background-color: #a5d6a7;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .goal {
+            margin: 5px 0;
+        }
+
+        .goal.completed {
+            text-decoration: line-through;
+            color: #2e7d32;
+        }
+
+        .active-boost {
+            animation: pulse 1s infinite;
+            border: 2px solid #ffeb3b;
+        }
+
+        #language-select{
+            padding: 10px;
+            border-radius: 5px;
+            border: 2px solid #66bb6a;
+            background-color: #c8e6c9;
+            color: #2e7d32;
+            font-size: 1em;
+            margin: 10px 0;
+            transition: background-color 0.3s, border-color 0.3s;
+            cursor: pointer;
+        }
+
+        #language-select:hover{
+            background-color: #a5d6a7;
+            border-color: #4caf50;
+        }
+
+        label[for="language-select"]{
+            display: block;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #1b5e20;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @supports (-webkit-touch-callout: none) {
+            body {
+                touch-action: pan-x pan-y;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="title">♻️ EcoClicker</h1>
+        <label for="language-select">Escolher idioma / Choose language:</label>
+        <select id="language-select">
+            <option value="pt">Português</option>
+            <option value="en">English</option>
+        </select>
+        <p id="description">Recicle, evolua suas melhorias e complete metas para salvar o planeta!</p>
+        <div id="points">0 Materiais Reciclados</div>
+
+        <button id="recycle-btn">🗑️</button>
+
+        <!-- UPGRADES -->
+        <div class="upgrades">
+            <button class="upgrade" id="upgrade1" onclick="buyUpgrade(1)">
+                Caixote de Lixo (+1/s)<br />
+                Nível: <span id="level1">0</span><br />
+                Custo: <span id="cost1">20</span> pontos
+            </button>
+            <button class="upgrade" id="upgrade2" onclick="buyUpgrade(2)">
+                Camião de Lixo (+5/s)<br />
+                Nível: <span id="level2">0</span><br />
+                Custo: <span id="cost2">100</span> pontos
+            </button>
+            <button class="upgrade" id="upgrade3" onclick="buyUpgrade(3)">
+                Painéis Solares (+10/s)<br />
+                Nível: <span id="level3">0</span><br />
+                Custo: <span id="cost3">500</span> pontos
+            </button>
+            <button class="upgrade" id="upgrade4" onclick="buyUpgrade(4)">
+                Ventoinhas Eólicas (+20/s)<br />
+                Nível: <span id="level4">0</span><br />
+                Custo: <span id="cost4">2000</span> pontos
+            </button>
+            <button class="upgrade" id="upgrade5" onclick="buyUpgrade(5)">
+                Barragem (+30/s)<br />
+                Nível: <span id="level5">0</span><br />
+                Custo: <span id="cost5">5000</span> pontos
+            </button>
+            <button class="upgrade" id="upgrade6" onclick="buyUpgrade(6)">
+                Fábrica Verde (+50/s)<br />
+                Nível: <span id="level6">0</span><br />
+                Custo: <span id="cost6">10000</span> pontos
+            </button>
+        </div>
+
+        <!-- METAS -->
+        <div class="goals">
+            <h3>🎯 Metas</h3>
+            <div class="goal" id="goal1">Recicle 50 itens (Recompensa: +10 pontos)</div>
+            <div class="goal" id="goal2">Recicle 200 itens (Recompensa: Lixeira Seletiva gratuita)</div>
+            <div class="goal" id="goal3">Recicle 1000 itens (Recompensa: +50/s por 30s)</div>
+            <div class="goal" id="goal7">Clique 1000 vezes (Recompensa: Clique vale +5)</div>
+            <div class="goal" id="goal5">Recicle 5000 itens (Recompensa: +100 pontos)</div>
+            <div class="goal" id="goal4">Alcance nível 5 em todas as melhorias (Recompensa: Dobra sua produção)</div>
+            <div class="goal" id="goal6">Alcance nível 10 em todas as melhorias (Recompensa: Produção triplicada por 1 min)</div>
+        </div>
+
+        <!-- CONQUISTAS -->
+        <div class="achievements">
+            <h3>🏆 Conquistas</h3>
+            <div class="achievement" id="achievement1">Recicle 100 itens</div>
+            <div class="achievement" id="achievement2">Recicle 500 itens</div>
+            <div class="achievement" id="achievement3">Recicle 5000 itens</div>
+            <div class="achievement" id="achievement6">Clique 1000 vezes</div>
+            <div class="achievement" id="achievement4">Alcance nível 10 em uma melhoria</div>
+            <div class="achievement" id="achievement9">Tenha 1.000.000 materiais reciclados</div>
+            <div class="achievement" id="achievement7">Tenha 5000/s de produção</div>
+            <div class="achievement" id="achievement8">Tenha 10000/s de produção</div>
+            <div class="achievement" id="achievement5">Complete todas as metas</div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // Variáveis principais
+        let points = 0;
+        let pointsPerSecond = 0;
+        let clickValue = 1;
+        let totalClicks = 0;
+        let lastUpdate = Date.now();
+
+        let upgrades = [
+            { baseCost: 20, cost: 20, pointsPerSecond: 1, level: 0, costMultiplier: 1.5 },
+            { baseCost: 100, cost: 100, pointsPerSecond: 5, level: 0, costMultiplier: 1.5 },
+            { baseCost: 500, cost: 500, pointsPerSecond: 10, level: 0, costMultiplier: 1.5 },
+            { baseCost: 2000, cost: 2000, pointsPerSecond: 20, level: 0, costMultiplier: 1.5 },
+            { baseCost: 5000, cost: 5000, pointsPerSecond: 30, level: 0, costMultiplier: 1.5 },
+            { baseCost: 10000, cost: 10000, pointsPerSecond: 50, level: 0, costMultiplier: 1.5 }
+        ];
+
+        let goals = [
+            { target: 50, reward: 10, completed: false },
+            { target: 200, reward: 'free_upgrade_1', completed: false },
+            { target: 1000, reward: 'boost_50', completed: false },
+            { target: 'all_level_5', reward: 'double_production', completed: false },
+            { target: 5000, reward: 100, completed: false },
+            { target: 'all_level_10', reward: 'triple_production_1min', completed: false },
+            { target: 'clicks_1000', reward: 'click_bonus_5', completed: false }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadGame();
+            setInterval(gameLoop, 1000);
+            setInterval(saveGame, 30000);
+
+            document.getElementById('recycle-btn').addEventListener('click', () => {
+                points += clickValue;
+                totalClicks++;
+                updatePoints();
+                checkAchievements();
+                checkGoals();
+            });
+
+            document.addEventListener('dblclick', e => e.preventDefault(), { passive: false });
+            document.addEventListener('touchstart', event => {
+                if (event.touches.length > 1) event.preventDefault();
+            }, { passive: false });
+        });
+
+        function gameLoop() {
+            const now = Date.now();
+            const deltaTime = (now - lastUpdate) / 1000;
+            lastUpdate = now;
+            points += pointsPerSecond * deltaTime;
+            updatePoints();
+            checkAchievements();
+            checkGoals();
+        }
+
+        function buyUpgrade(index) {
+            const upgrade = upgrades[index - 1];
+            if (points >= upgrade.cost) {
+                points -= upgrade.cost;
+                pointsPerSecond += upgrade.pointsPerSecond;
+                upgrade.level++;
+                upgrade.cost = Math.floor(upgrade.baseCost * Math.pow(upgrade.costMultiplier, upgrade.level));
+                document.getElementById(`level${index}`).textContent = upgrade.level;
+                document.getElementById(`cost${index}`).textContent = upgrade.cost;
+                updatePoints();
+            }
+        }
+
+        function checkGoals() {
+            goals.forEach((goal, index) => {
+                if (!goal.completed) {
+                    let conditionMet = false;
+                    if (typeof goal.target === 'number') {
+                        conditionMet = points >= goal.target;
+                    } else if (goal.target === 'all_level_5') {
+                        conditionMet = upgrades.every(u => u.level >= 5);
+                    } else if (goal.target === 'all_level_10') {
+                        conditionMet = upgrades.every(u => u.level >= 10);
+                    } else if (goal.target === 'clicks_1000') {
+                        conditionMet = totalClicks >= 1000;
+                    }
+
+                    if (conditionMet) {
+                        goal.completed = true;
+                        document.getElementById(`goal${index + 1}`).classList.add('completed');
+                        applyGoalReward(goal.reward);
+                    }
+                }
+            });
+        }
+
+        function applyGoalReward(reward) {
+            switch (reward) {
+                case 10: points += 10; break;
+                case 100: points += 100; break;
+                case 'free_upgrade_1':
+                    if (upgrades[0].level === 0) {
+                        pointsPerSecond += upgrades[0].pointsPerSecond;
+                        upgrades[0].level = 1;
+                        upgrades[0].cost = Math.floor(upgrades[0].baseCost * Math.pow(upgrades[0].costMultiplier, 1));
+                        document.getElementById('level1').textContent = 1;
+                        document.getElementById('cost1').textContent = upgrades[0].cost;
+                    }
+                    break;
+                case 'boost_50':
+                    pointsPerSecond += 50;
+                    setTimeout(() => pointsPerSecond -= 50, 30000);
+                    break;
+                case 'double_production': pointsPerSecond *= 2; break;
+                case 'triple_production_1min':
+                    pointsPerSecond *= 3;
+                    setTimeout(() => pointsPerSecond /= 3, 60000);
+                    break;
+                case 'click_bonus_5': clickValue += 5; break;
+            }
+            updatePoints();
+        }
+
+        function checkAchievements() {
+            if (points >= 100) document.getElementById('achievement1').classList.add('unlocked');
+            if (points >= 500) document.getElementById('achievement2').classList.add('unlocked');
+            if (points >= 5000) document.getElementById('achievement3').classList.add('unlocked');
+            if (upgrades.some(u => u.level >= 10)) document.getElementById('achievement4').classList.add('unlocked');
+            if (goals.every(g => g.completed)) document.getElementById('achievement5').classList.add('unlocked');
+            if (totalClicks >= 1000) document.getElementById('achievement6').classList.add('unlocked');
+            if (pointsPerSecond >= 5000) document.getElementById('achievement7').classList.add('unlocked');
+            if (pointsPerSecond >= 10000) document.getElementById('achievement8').classList.add('unlocked');
+            if (points >= 1000000) document.getElementById('achievement9').classList.add('unlocked');
+        }
+
+        function updatePoints() {
+            document.getElementById('points').textContent = `${Math.floor(points)} Materiais Reciclados (${Math.floor(pointsPerSecond)}/s)`;
+        }
+
+        function saveGame() {
+            const gameData = {
+                points, pointsPerSecond, clickValue, upgrades, totalClicks, lastUpdate: Date.now()
+            };
+            localStorage.setItem('ecoClickerSave', JSON.stringify(gameData));
+        }
+
+        function loadGame() {
+            const savedData = localStorage.getItem('ecoClickerSave');
+            if (savedData) {
+                const gameData = JSON.parse(savedData);
+                const offlineTime = (Date.now() - gameData.lastUpdate) / 1000;
+                points += offlineTime * gameData.pointsPerSecond * 0.1;
+                points = gameData.points || 0;
+                pointsPerSecond = gameData.pointsPerSecond || 0;
+                clickValue = gameData.clickValue || 1;
+                upgrades = gameData.upgrades || upgrades;
+                totalClicks = gameData.totalClicks || 0;
+
+                upgrades.forEach((upgrade, i) => {
+                    document.getElementById(`level${i + 1}`).textContent = upgrade.level;
+                    document.getElementById(`cost${i + 1}`).textContent = upgrade.cost;
+                });
+
+                updatePoints();
+            }
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            // Detecta a página atual
+            const currentPage = window.location.pathname;
+
+            // Define o valor do dropdown com base na URL
+            const select = document.getElementById('language-select');
+            if (currentPage.includes('index_ing')) {
+                select.value = 'en';
+            } else {
+                select.value = 'pt';
+            }
+
+            // Quando o idioma muda, salva e redireciona
+            select.addEventListener('change', function() {
+                // Salva o jogo imediatamente antes de trocar
+                const gameData = {
+                    points, 
+                    pointsPerSecond, 
+                    clickValue, 
+                    upgrades, 
+                    totalClicks, 
+                    lastUpdate: Date.now()
+                };
+                localStorage.setItem('ecoClickerSave', JSON.stringify(gameData));
+                
+                // Redireciona
+                const lang = this.value;
+                if (lang === 'en') {
+                    window.location.href = 'index_ing.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
+            });
+        });
+
+        if('serviceWorker' in navigator){
+            navigator.serviceWorker.register('/service-worker.js')
+        }
+    </script>
+</body>
+</html>
